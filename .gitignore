@@ -1,0 +1,5 @@
+# Project exclude paths
+/imooc-bilibili-dong/imooc-bilibili-api/target/
+/imooc-bilibili-dong/imooc-bilibili-dao/target/
+/imooc-bilibili-dong/imooc-bilibili-service/target/
+/imooc-bilibili-eureka/target/
