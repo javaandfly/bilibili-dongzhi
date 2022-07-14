@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/bilibili-dong.iml" filepath="$PROJECT_DIR$/.idea/bilibili-dong.iml" />
+      <module fileurl="file://$PROJECT_DIR$/imooc-bilibili-dong/imooc-bilibili-api/imooc-bilibili-api.iml" filepath="$PROJECT_DIR$/imooc-bilibili-dong/imooc-bilibili-api/imooc-bilibili-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/imooc-bilibili-dong/imooc-bilibili-dao/imooc-bilibili-dao.iml" filepath="$PROJECT_DIR$/imooc-bilibili-dong/imooc-bilibili-dao/imooc-bilibili-dao.iml" />
+      <module fileurl="file://$PROJECT_DIR$/imooc-bilibili-dong/imooc-bilibili-dong.iml" filepath="$PROJECT_DIR$/imooc-bilibili-dong/imooc-bilibili-dong.iml" />
+      <module fileurl="file://$PROJECT_DIR$/imooc-bilibili-eureka/imooc-bilibili-eureka.iml" filepath="$PROJECT_DIR$/imooc-bilibili-eureka/imooc-bilibili-eureka.iml" />
+      <module fileurl="file://$PROJECT_DIR$/imooc-bilibili-dong/imooc-bilibili-service/imooc-bilibili-service.iml" filepath="$PROJECT_DIR$/imooc-bilibili-dong/imooc-bilibili-service/imooc-bilibili-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/imooc-bilibili-zuul/imooc-bilibili-zuul.iml" filepath="$PROJECT_DIR$/imooc-bilibili-zuul/imooc-bilibili-zuul.iml" />
+    </modules>
+  </component>
+</project>

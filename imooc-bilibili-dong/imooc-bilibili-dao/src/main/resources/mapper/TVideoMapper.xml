@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.imooc.bilibili.mapper.TVideoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.imooc.bilibili.domain.TVideo">
+    <result column="id" property="id" />
+        <result column="userId" property="userId" />
+        <result column="url" property="url" />
+        <result column="thumbnail" property="thumbnail" />
+        <result column="title" property="title" />
+        <result column="type" property="type" />
+        <result column="duration" property="duration" />
+        <result column="area" property="area" />
+        <result column="description" property="description" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        userId, url, thumbnail, title, type, duration, area, description, create_time, update_time
+    </sql>
+    <select id="pageCountVideos" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select
+            count(1)
+        from
+            t_video
+        where
+            1=1
+            <if test="area !=null and area != '' ">
+                and area = #{area}
+            </if>
+    </select>
+    <select id="pageListVideos" parameterType="java.util.Map" resultType="com.imooc.bilibili.domain.TVideo">
+        select
+            *
+        from
+            t_video
+        where
+            1=1
+            <if test="area !=null and area != '' ">
+                and area = #{area}
+            </if>
+        order by id desc
+        limit #{start}, #{limit}
+    </select>
+
+</mapper>

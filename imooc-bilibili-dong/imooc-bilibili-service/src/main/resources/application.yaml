@@ -1,0 +1,19 @@
+#profile
+spring:
+  profiles:
+    active: test
+  devtools:
+    restart:
+      enabled: true
+mybatis-plus:
+  #  配置Mapper.xml
+  mapper-locations: classpath*:/mapper/*.xml
+  type-aliases-package: com.imooc.blibili.mapper
+  configuration:
+    #在映射实体或者属性时，将数据库中表名和字段名中的下划线去掉，按照驼峰命名法映射
+    map-underscore-to-camel-case: true
+    # 把SQL的查询的过程输出到控制台
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: ASSIGN_ID

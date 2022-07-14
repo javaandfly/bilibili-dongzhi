@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.apache.mahout:mahout-hdfs:0.12.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../Program Files/mavenReposity/org/apache/mahout/mahout-hdfs/0.12.2/mahout-hdfs-0.12.2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../Program Files/mavenReposity/org/apache/mahout/mahout-hdfs/0.12.2/mahout-hdfs-0.12.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../Program Files/mavenReposity/org/apache/mahout/mahout-hdfs/0.12.2/mahout-hdfs-0.12.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

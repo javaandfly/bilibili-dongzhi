@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="imooc-bilibili-zuul" />
+        <module name="imooc-bilibili-service" />
+        <module name="imooc-bilibili-eureka" />
+        <module name="imooc-bilibili-dao" />
+        <module name="imooc-bilibili-api" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="imooc-bilibili-api" target="8" />
+      <module name="imooc-bilibili-dao" target="8" />
+      <module name="imooc-bilibili-dong" target="8" />
+      <module name="imooc-bilibili-eureka" target="8" />
+      <module name="imooc-bilibili-service" target="8" />
+      <module name="imooc-bilibili-zuul" target="8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="imooc-bilibili-api" options="-parameters" />
+      <module name="imooc-bilibili-dao" options="-parameters" />
+      <module name="imooc-bilibili-service" options="-parameters" />
+      <module name="imooc-bilibili-zuul" options="-parameters" />
+    </option>
+  </component>
+</project>

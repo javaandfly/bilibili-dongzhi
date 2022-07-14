@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.imooc.bilibili.mapper.TVideoViewMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.imooc.bilibili.domain.TVideoView">
+    <result column="id" property="id" />
+        <result column="video_id" property="videoId" />
+        <result column="user_id" property="userId" />
+        <result column="client_id" property="clientId" />
+        <result column="ip" property="ip" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        video_id, user_id, client_id, ip, create_time
+    </sql>
+
+    <select id="getVideoView" parameterType="java.util.Map" resultType="com.imooc.bilibili.domain.TVideoView">
+        select
+        *
+        from
+        t_video_view
+        where
+        videoId = #{videoId}
+        <if test="userId == null and clientId != null">
+            and clientId = #{clientId} and userId is null
+        </if>
+        <if test="userId != null">
+            and userId = #{userId}
+        </if>
+        <if test="ip != null and ip != '' ">
+            and ip = #{ip}
+        </if>
+        <if test="today != null and today != '' ">
+            and DATE_FORMAT(createTime,'%Y-%m-%d') = #{today}
+        </if>
+    </select>
+
+</mapper>

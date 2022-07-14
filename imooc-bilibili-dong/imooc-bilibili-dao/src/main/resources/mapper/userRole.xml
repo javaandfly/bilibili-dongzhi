@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.imooc.bilibili.mapper.UserRoleMapper">
+
+
+    <select id="getUserRoleByUserId" parameterType="java.lang.Long" resultType="com.imooc.bilibili.domain.auth.UserRole">
+        select
+            ur.*,
+            ar.name role_name,
+            ar.code role_code
+        from
+            t_user_role ur
+            left join t_auth_role ar
+                on ur.role_id = ar.id
+        where
+            user_id=${userId}
+    </select>
+
+</mapper>
