@@ -22,6 +22,15 @@ public class FileApi {
         return new JsonResponse<>(fileMD5);
     }
 
+    /**
+     * 文件传输
+     * @param slice
+     * @param fileMd5
+     * @param sliceNo
+     * @param totalSliceNo
+     * @return
+     * @throws Exception
+     */
     @PutMapping("/file-slices")
     public JsonResponse<String> uploadFileBySlices(MultipartFile slice,
                                                    String fileMd5,

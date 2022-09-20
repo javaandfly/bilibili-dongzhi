@@ -53,9 +53,12 @@ public class MQReceiver {
         JSONObject jsonObject = JSONObject.parseObject(message, JSONObject.class);
         String sessionId = jsonObject.getString("sessionId");
         String messageDanmu = jsonObject.getString("message");
+        //调用全局的map 来拿出来属于这个用户的长连接
         WebSocketService webSocketService = WebSocketService.WEBSOCKET_MAP.get(sessionId);
+        //如果已经建立连接
         if (webSocketService.getSession().isOpen()){
             try {
+                //发送信息到前端
                 webSocketService.sendMessage(messageDanmu);
             }catch (IOException e){
                 e.printStackTrace();

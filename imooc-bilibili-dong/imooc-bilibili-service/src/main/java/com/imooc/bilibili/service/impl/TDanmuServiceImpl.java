@@ -43,6 +43,7 @@ public class TDanmuServiceImpl extends ServiceImpl<TDanmuMapper, TDanmu> impleme
     }
 
     @Override
+    //异步保存弹幕到数据库 这个注解
     @Async
     public void asyncAddDanmu(TDanmu danmu) {
         this.save(danmu);

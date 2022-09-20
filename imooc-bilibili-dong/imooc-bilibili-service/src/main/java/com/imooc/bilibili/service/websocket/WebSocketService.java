@@ -32,7 +32,7 @@ public class WebSocketService {
     private final Logger logger =  LoggerFactory.getLogger(this.getClass());
 
     private static final AtomicInteger ONLINE_COUNT = new AtomicInteger(0);
-
+    /**多例的webSocket*/
     public static final ConcurrentHashMap<String, WebSocketService> WEBSOCKET_MAP = new ConcurrentHashMap<>();
 
     private Session session;
@@ -40,7 +40,7 @@ public class WebSocketService {
     private String sessionId;
 
     private Long userId;
-
+    //全局的启动类bean 因为这个类是多例的 所以如果注入单例bean会报错 只能通过容器去那
     private static ApplicationContext APPLICATION_CONTEXT;
 
     public static void setApplicationContext(ApplicationContext applicationContext){
@@ -50,14 +50,19 @@ public class WebSocketService {
     @OnOpen
     public void openConnection(Session session, @PathParam("token") String token){
         try{
+            //验证用户是否登录
             this.userId = TokenUtil.verifyToken(token);
         }catch (Exception ignored){}
+        //给当前全局变量赋值
         this.sessionId = session.getId();
         this.session = session;
+        //在多例bean中map中找webSocket对象
         if(WEBSOCKET_MAP.containsKey(sessionId)){
+            //如果有就删除重新添加
             WEBSOCKET_MAP.remove(sessionId);
             WEBSOCKET_MAP.put(sessionId, this);
         }else{
+            //如果没有就存入当前对象 并把连接数＋1
             WEBSOCKET_MAP.put(sessionId, this);
             ONLINE_COUNT.getAndIncrement();
         }
@@ -75,7 +80,7 @@ public class WebSocketService {
             WEBSOCKET_MAP.remove(sessionId);
             ONLINE_COUNT.getAndDecrement();
         }
-        logger.info("用户退出：" + sessionId + "当前在线人数为：" + ONLINE_COUNT.get());
+         logger.info("用户退出：" + sessionId + "当前在线人数为：" + ONLINE_COUNT.get());
     }
 
     @OnMessage
@@ -87,7 +92,8 @@ public class WebSocketService {
                 for(Map.Entry<String, WebSocketService> entry : WEBSOCKET_MAP.entrySet()){
                     //获取到每一个用户的webSocket
                     WebSocketService webSocketService = entry.getValue();
-//                    DefaultMQProducer danmusProducer = (DefaultMQProducer)APPLICATION_CONTEXT.getBean("danmusProducer");
+//                 DefaultMQProducer danmusProducer = (DefaultMQProducer)APPLICATION_CONTEXT.getBean("danmusProducer");
+                    //因为多例所以从容器中获取到MQ的bean 然后广播发送
                     MQSender mqSender = (MQSender) APPLICATION_CONTEXT.getBean("MQSender");
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("message", message);
@@ -117,11 +123,16 @@ public class WebSocketService {
     public void onError(Throwable error){
     }
 
+    /**
+     * 发送信息到前端
+     * @param message
+     * @throws IOException
+     */
     public void sendMessage(String message) throws IOException {
         this.session.getBasicRemote().sendText(message);
     }
 
-    //或直接指定时间间隔，例如：5秒
+    //或直接指定时间间隔，例如：5秒 每过五秒查询在线人数
     @Scheduled(fixedRate=5000)
     private void noticeOnlineCount() throws IOException {
         for(Map.Entry<String, WebSocketService> entry : WebSocketService.WEBSOCKET_MAP.entrySet()){

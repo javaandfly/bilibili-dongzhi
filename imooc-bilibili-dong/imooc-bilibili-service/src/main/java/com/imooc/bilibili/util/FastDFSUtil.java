@@ -45,6 +45,7 @@ public class FastDFSUtil {
     @Value("${fdfs.http.storage-addr}")
     private String httpFdfsStorageAddr;
 
+    /**获取文件的后缀名*/
     public String getFileType(MultipartFile file){
         if(file == null){
             throw new ConditionException("非法文件！");
@@ -54,7 +55,7 @@ public class FastDFSUtil {
         return fileName.substring(index+1);
     }
 
-    //上传
+    //上传普通文件 使用的是普通的无法断点续传的
     public String uploadCommonFile(MultipartFile file) throws Exception {
         Set<MetaData> metaDataSet = new HashSet<>();
         String fileType = this.getFileType(file);
@@ -76,19 +77,39 @@ public class FastDFSUtil {
         return storePath.getPath();
     }
 
+    /**
+     * 续传文件添加
+     * @param file
+     * @param filePath
+     * @param offset
+     * @throws Exception
+     */
     public void modifyAppenderFile(MultipartFile file, String filePath, long offset) throws Exception{
         appendFileStorageClient.modifyFile(DEFAULT_GROUP, filePath, file.getInputStream(), file.getSize(), offset);
     }
 
+    /**
+     * 断点续传到fastdfs
+     * @param file
+     * @param fileMd5
+     * @param sliceNo
+     * @param totalSliceNo
+     * @return
+     * @throws Exception
+     */
     public String uploadFileBySlices(MultipartFile file, String fileMd5, Integer sliceNo, Integer totalSliceNo) throws Exception {
         if(file == null || sliceNo == null || totalSliceNo == null){
             throw new ConditionException("参数异常！");
         }
+        //每一个视频唯一的标识符
         String pathKey = PATH_KEY + fileMd5;
+        //分片大小
         String uploadedSizeKey = UPLOADED_SIZE_KEY + fileMd5;
+        //文件结束的大小
         String uploadedNoKey = UPLOADED_NO_KEY + fileMd5;
         String uploadedSizeStr = redisTemplate.opsForValue().get(uploadedSizeKey);
         Long uploadedSize = 0L;
+        //如果有断点 就是不为空的时候
         if(!StringUtil.isNullOrEmpty(uploadedSizeStr)){
             uploadedSize = Long.valueOf(uploadedSizeStr);
         }
@@ -97,6 +118,7 @@ public class FastDFSUtil {
             if(StringUtil.isNullOrEmpty(path)){
                 throw new ConditionException("上传失败！");
             }
+            //如果是第一个分片就用redis存进去
             redisTemplate.opsForValue().set(pathKey, path,1L, TimeUnit.DAYS);
             redisTemplate.opsForValue().set(uploadedNoKey, "1",1L,TimeUnit.DAYS);
         }else{
@@ -104,17 +126,22 @@ public class FastDFSUtil {
             if(StringUtil.isNullOrEmpty(filePath)){
                 throw new ConditionException("上传失败！");
             }
+            //拿到偏移量 继续上传
             this.modifyAppenderFile(file, filePath, uploadedSize);
             redisTemplate.opsForValue().increment(uploadedNoKey);
         }
         // 修改历史上传分片文件大小
         uploadedSize  += file.getSize();
+        //修改redis中的值
         redisTemplate.opsForValue().set(uploadedSizeKey, String.valueOf(uploadedSize));
-        //如果所有分片全部上传完毕，则清空redis里面相关的key和value
+        //获取当前分片大小 如果和传进来的最终分片大小相等 就说明上传完毕
         String uploadedNoStr = redisTemplate.opsForValue().get(uploadedNoKey);
+        //转为Integer
         Integer uploadedNo = Integer.valueOf(uploadedNoStr);
         String resultPath = "";
+        //如果所有分片全部上传完毕，则清空redis里面相关的key和value
         if(uploadedNo.equals(totalSliceNo)){
+            //先把现在的视频唯一标识符赋值出去后 再删除
             resultPath = redisTemplate.opsForValue().get(pathKey);
             List<String> keyList = Arrays.asList(uploadedNoKey, pathKey, uploadedSizeKey);
             redisTemplate.delete(keyList);
@@ -122,15 +149,24 @@ public class FastDFSUtil {
         return resultPath;
     }
 
+    /**
+     * 上传文件到本地
+     * @param multipartFile
+     * @throws Exception
+     */
     public void convertFileToSlices(MultipartFile multipartFile) throws Exception{
         String fileType = this.getFileType(multipartFile);
         //生成临时文件，将MultipartFile转为File
         File file = this.multipartFileToFile(multipartFile);
         long fileLength = file.length();
         int count = 1;
+        //一片一片写到磁盘
         for(int i = 0; i < fileLength; i += SLICE_SIZE){
+            //RandomAccessFile可以用来断点续传和分片
             RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
+            //可以定位文件的分片位置
             randomAccessFile.seek(i);
+            //默认大小2m 1024*1024*2
             byte[] bytes = new byte[SLICE_SIZE];
             int len = randomAccessFile.read(bytes);
             String path = "/Users/hat/tmpfile/" + count + "." + fileType;
@@ -145,6 +181,12 @@ public class FastDFSUtil {
         file.delete();
     }
 
+    /**
+     * 根据文件类型生成文件
+     * @param multipartFile
+     * @return
+     * @throws Exception
+     */
     public File multipartFileToFile(MultipartFile multipartFile) throws Exception{
         String originalFileName = multipartFile.getOriginalFilename();
         String[] fileName = originalFileName.split("\\.");
