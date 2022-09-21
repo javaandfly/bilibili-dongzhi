@@ -29,13 +29,16 @@ public class UserMomentsServiceImpl extends ServiceImpl<UserMomentsMapper, UserM
     public void addUserMoments(UserMoment userMoment) {
     userMoment.setCreateTime(new Date());
     this.save(userMoment);
+    //只要有动态就通过MQ发个每个用户
     mqSender.sendMessage(JSONObject.toJSONString(userMoment));
     }
 
     @Override
     public List<UserMoment> getUserSubscribedMoments(Long userId) {
         String key="subscribed-"+userId;
+        //从redis中拿数据
         String s = redisTemplate.opsForValue().get(key);
+        redisTemplate.delete(key);
         return JSONArray.parseArray(s, UserMoment.class);
     }
 }

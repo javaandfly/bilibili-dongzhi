@@ -24,6 +24,13 @@ public class UserMomentsApi {
     @Autowired
     private UserSupport userSupport;
 
+
+    /**
+     * 用来保存用户的动态 0:视频 1:直播 2：专栏动态 并用RabbitMQ发送
+     * @param userMoment
+     * @return
+     */
+    //自定义注解 来判断用户的等级
     @ApiLimitedRole(limitedRoleCodeList = {AuthRoleConstant.ROLE_LV0})
     @DataLimited
     @PostMapping("user-moments")
@@ -34,10 +41,14 @@ public class UserMomentsApi {
         return JsonResponse.success();
     }
 
-
+    /**
+     * 用户点击关注后 从消息队列中拿数据
+     * @return
+     */
     @GetMapping("user-subscribed-moments")
     public JsonResponse<List<UserMoment>> getUserSubscribedMoments(){
         Long userId = userSupport.getCurrentUserId();
+        //返回的是list数组
       return new JsonResponse<>(userMomentsService.getUserSubscribedMoments(userId));
     }
 }

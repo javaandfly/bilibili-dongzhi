@@ -32,18 +32,22 @@ public class ApiLimitedRoleAspect {
     @Autowired
     private UserRoleService userRoleService;
 
-    //切点
+    //切点  按照注解进行
     @Pointcut("@annotation(com.imooc.bilibili.domain.annotation.ApiLimitedRole)")
     public void check(){
     }
 
+    //在方法执行前
     @Before("check() && @annotation(apiLimitedRole)")
     public void doBefore(JoinPoint joinPoint, ApiLimitedRole apiLimitedRole){
         Long userId = userSupport.getCurrentUserId();
+        //通过id查出等级
         List<UserRole> userRoleList = userRoleService.getUserRoleByUserId(userId);
         //传进来的是0 所以只要有交集 就说明权限不足
         String[] limitedRoleCodeList = apiLimitedRole.limitedRoleCodeList();
+        //对数组进行去重
         Set<String> limitedRoleCodeSet = Arrays.stream(limitedRoleCodeList).collect(Collectors.toSet());
+        //对查出来的数组进行去重
         Set<String> roleCodeSet = userRoleList.stream().map(UserRole::getRoleCode).collect(Collectors.toSet());
         //取交集
         roleCodeSet.retainAll(limitedRoleCodeSet);
