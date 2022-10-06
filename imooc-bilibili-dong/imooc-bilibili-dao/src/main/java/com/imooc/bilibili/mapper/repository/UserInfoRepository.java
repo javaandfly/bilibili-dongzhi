@@ -5,4 +5,5 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 
 public interface UserInfoRepository extends ElasticsearchRepository<UserInfo, Long> {
 
+    UserInfo findByNickLike(String keyword);
 }

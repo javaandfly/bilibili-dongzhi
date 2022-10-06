@@ -48,7 +48,7 @@ public class ElasticSearchService {
         videoRepository.save(video);
     }
 
-
+    //获取用户列表
     public List<Map<String, Object>> getContents(String keyword,
                                                  Integer pageNo,
                                                  Integer pageSize) throws IOException {
@@ -58,7 +58,9 @@ public class ElasticSearchService {
         //分页
         sourceBuilder.from(pageNo - 1);
         sourceBuilder.size(pageSize);
+        //根据三个值判断 包括视频类中的标题title 用户表里的名称nick 视频里的简介description
         MultiMatchQueryBuilder matchQueryBuilder = QueryBuilders.multiMatchQuery(keyword, "title", "nick", "description");
+        //类似于mybatis-plus的构造器
         sourceBuilder.query(matchQueryBuilder);
         searchRequest.source(sourceBuilder);
         sourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
@@ -69,8 +71,8 @@ public class ElasticSearchService {
             highlightBuilder.fields().add(new HighlightBuilder.Field(key));
         }
         highlightBuilder.requireFieldMatch(false); //如果要多个字段进行高亮，要为false
-        highlightBuilder.preTags("<span style=\"color:red\">");
-        highlightBuilder.postTags("</span>");
+        highlightBuilder.preTags("<span style=\"color:red\">");//在标签之前
+        highlightBuilder.postTags("</span>");//在标签之后
         sourceBuilder.highlighter(highlightBuilder);
         //执行搜索
         SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
@@ -99,5 +101,10 @@ public class ElasticSearchService {
 
     public void deleteAllVideos(){
         videoRepository.deleteAll();
+    }
+
+    public UserInfo getUserInfo(String keyword) {
+
+        return userInfoRepository.findByNickLike(keyword);
     }
 }

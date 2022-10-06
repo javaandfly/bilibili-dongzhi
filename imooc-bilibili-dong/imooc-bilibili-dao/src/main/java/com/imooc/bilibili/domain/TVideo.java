@@ -24,10 +24,12 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
+//es的索引名称
 @Document(indexName = "videos")
 public class TVideo implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    //es标识主键id
     @Id
     private Long id;
 
@@ -51,6 +53,7 @@ public class TVideo implements Serializable {
     /**
      * 视频标题
      */
+    //es标记字段 text标识可分词的String
     @Field(type = FieldType.Text)
     private String title;
 

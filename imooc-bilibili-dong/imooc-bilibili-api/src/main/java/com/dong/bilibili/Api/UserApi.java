@@ -6,6 +6,7 @@ import com.imooc.bilibili.domain.JsonResponse;
 import com.imooc.bilibili.domain.PageResult;
 import com.imooc.bilibili.domain.User;
 import com.imooc.bilibili.domain.UserInfo;
+import com.imooc.bilibili.service.ElasticSearchService;
 import com.imooc.bilibili.service.UserInfoService;
 import com.imooc.bilibili.service.UserService;
 import com.imooc.bilibili.util.RSAUtil;
@@ -28,6 +29,8 @@ public class UserApi {
         private UserSupport     userSupport;
         @Autowired
         private UserInfoService userInfoService;
+        @Autowired
+        private ElasticSearchService elasticSearchService;
         @PutMapping("/users")
         public JsonResponse<User> getUserInfo(){
                 Long userId = userSupport.getCurrentUserId();
@@ -72,6 +75,7 @@ public class UserApi {
                 Long userId = userSupport.getCurrentUserId();
                 userInfo.setUserId(userId);
                 userService.updateUserInfo(userInfo);
+
                 return JsonResponse.success();
         }
         @GetMapping("/user-infos")
