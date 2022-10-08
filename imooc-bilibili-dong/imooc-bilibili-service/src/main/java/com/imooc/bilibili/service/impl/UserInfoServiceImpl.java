@@ -1,7 +1,9 @@
 package com.imooc.bilibili.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.imooc.bilibili.domain.PageResult;
 import com.imooc.bilibili.domain.UserFollowing;
 import com.imooc.bilibili.domain.UserInfo;
 import com.imooc.bilibili.mapper.UserInfoMapper;
@@ -10,10 +12,7 @@ import com.imooc.bilibili.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> implements UserInfoService {
@@ -21,6 +20,33 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     private UserInfoMapper userInfoMapper;
     @Autowired
     private UserFollowingService userFollowingService;
+
+    @Override
+    public Integer pageCountUserInfos(Map<String, Object> params) {
+        return userInfoMapper.pageCountUserInfo(params);
+    }
+
+
+
+    @Override
+    public List<UserInfo> pageListsUserInfos(JSONObject params) {
+        return userInfoMapper.pageListUserInfo(params);
+    }
+
+    @Override
+    public PageResult<UserInfo> pageListUserInfos(JSONObject params) {
+        Integer no = params.getInteger("no");
+        Integer size = params.getInteger("size");
+        params.put("start", (no-1)*size);
+        params.put("limit", size);
+        Integer total = this.pageCountUserInfos(params);
+        List<UserInfo> list = new ArrayList<>();
+        if(total > 0){
+            list = this.pageListsUserInfos(params);
+        }
+        return new PageResult<>(total,list);
+
+    }
     @Override
     public UserInfo getUserInfoByUserId(Long userId) {
         LambdaQueryWrapper<UserInfo> queryWrapper = new LambdaQueryWrapper<>();

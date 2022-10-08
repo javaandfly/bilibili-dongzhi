@@ -3,6 +3,7 @@ package com.imooc.bilibili.service.impl;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -139,29 +140,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userInfoService.updateById(userInfoByUserId);
         return "修改成功";
     }
-    @Override
-    public PageResult<UserInfo> pageListUserInfos(JSONObject params) {
-        Integer no = params.getInteger("no");
-        Integer size = params.getInteger("size");
-        params.put("start", (no-1)*size);
-        params.put("limit", size);
-        Integer total = this.pageCountUserInfos(params);
-        List<UserInfo> list = new ArrayList<>();
-        if(total > 0){
-            list = this.pageListsUserInfos(params);
-        }
-        return new PageResult<>(total,list);
-    }
+//    @Override
+//    public PageResult<UserInfo> pageListUserInfos(JSONObject params) {
+//        Integer no = params.getInteger("no");
+//        Integer size = params.getInteger("size");
+//        params.put("start", (no-1)*size);
+//        params.put("limit", size);
+//        Integer total = this.pageCountUserInfos(params);
+//        List<UserInfo> list = new ArrayList<>();
+//        if(total > 0){
+//            list = this.pageListsUserInfos(params);
+//        }
+//        return new PageResult<>(total,list);
+//        return null;
+//    }
 
-    @Override
-    public Integer pageCountUserInfos(Map<String, Object> params) {
-        return userMapper.pageCountUserInfo(params);
-    }
 
-    @Override
-    public List<UserInfo> pageListsUserInfos(JSONObject params) {
-        return userMapper.pageListUserInfo(params);
-    }
+//
+//    @Override
+//    public List<UserInfo> pageListsUserInfos(JSONObject params) {
+//        return userMapper.pageListUserInfo(params);
+//    }
 
     @Override
     public Map<String, Object> loginForDts(User user) throws Exception {

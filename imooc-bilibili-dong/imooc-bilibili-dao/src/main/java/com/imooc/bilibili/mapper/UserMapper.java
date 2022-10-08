@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
-    Integer pageCountUserInfo(Map<String, Object> params);
 
-    List<UserInfo> pageListUserInfo(JSONObject params);
+
+
 }

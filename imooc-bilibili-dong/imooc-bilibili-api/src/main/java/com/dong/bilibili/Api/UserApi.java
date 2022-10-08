@@ -86,7 +86,7 @@ public class UserApi {
                 params.put("size", size);
                 params.put("nick", nick);
                 params.put("userId", userId);
-                PageResult<UserInfo> result = userService.pageListUserInfos(params);
+                PageResult<UserInfo> result = userInfoService.pageListUserInfos(params);
                 if(result.getTotal() > 0){
                         List<UserInfo> checkedUserInfoList = userInfoService.checkFollowingStatus(result.getList(), userId);
                         result.setList(checkedUserInfoList);

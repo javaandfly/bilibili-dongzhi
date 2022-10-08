@@ -47,11 +47,11 @@ public interface UserService extends IService<User> {
     String updateUserInfo(UserInfo userInfo);
 
 
-    PageResult<UserInfo> pageListUserInfos(JSONObject params);
+//    PageResult<UserInfo> pageListUserInfos(JSONObject params);
 
-    Integer pageCountUserInfos(Map<String,Object> params);
+//    Integer pageCountUserInfos(Map<String,Object> params);
 
-    List<UserInfo> pageListsUserInfos(JSONObject params);
+//    List<UserInfo> pageListsUserInfos(JSONObject params);
 
     Map<String, Object> loginForDts(User user) throws Exception;
 
