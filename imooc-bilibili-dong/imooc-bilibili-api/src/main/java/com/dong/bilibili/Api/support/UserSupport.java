@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class UserSupport {
 
-//    @Autowired
-//    private UserService userService;
+    @Autowired
+    private UserService userService;
 
     public Long getCurrentUserId() {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();

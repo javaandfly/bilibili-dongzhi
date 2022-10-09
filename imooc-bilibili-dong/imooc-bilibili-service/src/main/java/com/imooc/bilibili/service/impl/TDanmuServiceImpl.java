@@ -59,11 +59,13 @@ public class TDanmuServiceImpl extends ServiceImpl<TDanmuMapper, TDanmu> impleme
         String key = DANMU_KEY + videoId;
         String value = redisTemplate.opsForValue().get(key);
         List<TDanmu> list;
+        //redis里有从redis那 没有就更新缓存
         if(!StringUtil.isNullOrEmpty(value)){
             list = JSONArray.parseArray(value, TDanmu.class);
             if(!StringUtil.isNullOrEmpty(startTime)
                     && !StringUtil.isNullOrEmpty(endTime)){
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                //特定字符串转为日期对象
                 Date startDate = sdf.parse(startTime);
                 Date endDate = sdf.parse(endTime);
                 List<TDanmu> childList = new ArrayList<>();

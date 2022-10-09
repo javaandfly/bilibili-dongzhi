@@ -46,7 +46,7 @@ public class WebSocketService {
     public static void setApplicationContext(ApplicationContext applicationContext){
         WebSocketService.APPLICATION_CONTEXT = applicationContext;
     }
-    //建立连接
+    //建立连接成功后 执行
     @OnOpen
     public void openConnection(Session session, @PathParam("token") String token){
         try{
@@ -73,7 +73,7 @@ public class WebSocketService {
             logger.error("连接异常");
         }
     }
-    //断开连接
+    //断开连接后执行
     @OnClose
     public void closeConnection(){
         if(WEBSOCKET_MAP.containsKey(sessionId)){
